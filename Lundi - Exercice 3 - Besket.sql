@@ -122,17 +122,3 @@ FOREIGN KEY (id_phase) REFERENCES phase(id_phase)
 ON DELETE CASCADE,
 ADD CONSTRAINT equipes_differente
 CHECK (id_equipe_2 != id_equipe_1);
-
-
-
-
-
-
-
-
-
-
-
-
-
-

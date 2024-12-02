@@ -149,21 +149,3 @@ ON DELETE CASCADE,
 ADD CONSTRAINT fk_concevoir_produit
 FOREIGN KEY (id_produit) REFERENCES produit(id_produit)
 ON DELETE CASCADE;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1,11 +1,14 @@
 -- Utilisation de la base de donnée pour les scripts suivants
 USE lundi_exercice_3_basket ;
 
+-- Suppression des contraintes avant exécution des scripts
 ALTER TABLE partie
 DROP CONSTRAINT IF EXISTS score_equipe_1,
 DROP CONSTRAINT IF EXISTS score_equipe_2;
+
 ALTER TABLE equipe
 DROP CONSTRAINT IF EXISTS longueur_nom_equipe;
+
 ALTER TABLE adresse
 DROP CONSTRAINT IF EXISTS longueur_code_postal;
 

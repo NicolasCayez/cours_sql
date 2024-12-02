@@ -117,24 +117,3 @@ ON DELETE CASCADE,
 ADD CONSTRAINT fk_to_add_article
 FOREIGN KEY (article_id_fk) REFERENCES article (Id_article) 
 ON DELETE CASCADE;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
