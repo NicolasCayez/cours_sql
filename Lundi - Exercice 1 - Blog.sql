@@ -6,12 +6,12 @@ CREATE DATABASE IF NOT EXISTS lundi_exercice_1_blog CHARSET utf8mb4;
 USE lundi_exercice_1_blog;
 
 -- Création des tables
-CREATE TABLE roles(
+CREATE TABLE IF NOT EXISTS roles(
 	Id_roles INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
 	roles_name VARCHAR(50) NOT NULL
 )ENGINE=Innodb;
 
-CREATE TABLE account(
+CREATE TABLE IF NOT EXISTS account(
 	Id_account INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
 	account_firstname VARCHAR(50) NOT NULL,
 	account_lastname VARCHAR(50) NOT NULL,
@@ -24,7 +24,7 @@ CREATE TABLE account(
 	roles_id_fk INT NOT NULL
 )ENGINE=Innodb;
 
-CREATE TABLE note(
+CREATE TABLE IF NOT EXISTS note(
 	Id_note INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
 	note_value INT,
 	note_reaction TINYINT(1),
@@ -32,30 +32,30 @@ CREATE TABLE note(
 	account_id_fk INT NOT NULL
 )ENGINE=Innodb;
 
-CREATE TABLE media(
+CREATE TABLE IF NOT EXISTS media(
 	Id_media INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
 	media_url VARCHAR(255)NOT NULL,
 	media_clug VARCHAR(50) NOT NULL
 )ENGINE=Innodb;
 
-CREATE TABLE article_media(
+CREATE TABLE IF NOT EXISTS article_media(
 	article_id INT NOT NULL,
 	media_id INT NOT NULL,
 	PRIMARY KEY (article_id, media_id)
 )ENGINE=Innodb;
 
-CREATE TABLE category(
+CREATE TABLE IF NOT EXISTS category(
 	Id_category INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
 	category_name VARCHAR(50) NOT NULL
 )ENGINE=Innodb;
 
-CREATE TABLE article_category(
+CREATE TABLE IF NOT EXISTS article_category(
 	article_id INT NOT NULL,
 	category_id INT NOT NULL,
 	PRIMARY KEY (article_id, category_id)
 )ENGINE=Innodb;
 
-CREATE TABLE article(
+CREATE TABLE IF NOT EXISTS article(
 	Id_article INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
 	article_title VARCHAR(50) NOT NULL,
 	article_content TEXT NOT NULL,
@@ -66,7 +66,7 @@ CREATE TABLE article(
 	article_author_fk INT NOT NULL
 )ENGINE=Innodb;
 
-CREATE TABLE commentary(
+CREATE TABLE IF NOT EXISTS commentary(
 	Id_commentary INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
 	commentary_content VARCHAR(50) NOT NULL,
 	commentary_creation_date DATETIME NOT NULL,
