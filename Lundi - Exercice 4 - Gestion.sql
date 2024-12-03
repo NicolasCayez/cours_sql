@@ -1,9 +1,9 @@
 -- Nettoyage si relance du script
-DROP DATABASE IF EXISTS lundi_exercice_4_gestion;
+DROP DATABASE IF EXISTS exercice_4_gestion;
 -- Création de la base de données
-CREATE DATABASE IF NOT EXISTS lundi_exercice_4_gestion CHARSET utf8mb4;
+CREATE DATABASE IF NOT EXISTS exercice_4_gestion CHARSET utf8mb4;
 -- Utilisation de la base de donnée pour les scripts suivants
-USE lundi_exercice_4_gestion ;
+USE exercice_4_gestion ;
 
 -- Création des tables
 CREATE TABLE IF NOT EXISTS utilisateur(
@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS utilisateur(
 	id_role INT NOT NULL
 )ENGINE=Innodb;
 
-CREATE TABLE IF NOT EXISTS role(
+CREATE TABLE IF NOT EXISTS `role`(
 	id_role INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
 	nom_role VARCHAR(50) NOT NULL UNIQUE
 )ENGINE=Innodb;
@@ -23,12 +23,6 @@ CREATE TABLE IF NOT EXISTS matiere_premiere(
 	nom_matiere_premiere VARCHAR(50) NOT NULL,
 	quantite_matiere INT NOT NULL,
 	prix_achat DECIMAL(5,2)
-)ENGINE=Innodb;
-
-CREATE TABLE IF NOT EXISTS fournir(
-	id_matiere_premiere INT NOT NULL,
-	id_fournisseur INT NOT NULL,
-	PRIMARY KEY (id_matiere_premiere, id_fournisseur)
 )ENGINE=Innodb;
 
 CREATE TABLE IF NOT EXISTS fournisseur(
@@ -55,17 +49,30 @@ CREATE TABLE IF NOT EXISTS client(
 	id_adresse INT NOT NULL
 )ENGINE=Innodb;
 
-CREATE TABLE IF NOT EXISTS fideliser(
-	id_client INT NOT NULL,
-	id_commercial INT NOT NULL,
-	chiffre_affaire DECIMAL(10,2),
-	PRIMARY KEY (id_client , id_commercial)
-)ENGINE=Innodb;
-
 CREATE TABLE IF NOT EXISTS commercial(
 	id_commercial INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
 	nom_commercial VARCHAR(50) NOT NULL,
 	prenom_commercial VARCHAR(50) NOT NULL
+)ENGINE=Innodb;
+
+CREATE TABLE IF NOT EXISTS produit(
+	id_produit INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+	nom_produit VARCHAR(50) NOT NULL,
+	prix_vente DECIMAL(5,2),
+	quantite_produit INT NOT NULL
+)ENGINE=Innodb;
+
+-- Création des tables association
+CREATE TABLE IF NOT EXISTS fournir(
+	id_matiere_premiere INT NOT NULL,
+	id_fournisseur INT NOT NULL,
+	PRIMARY KEY (id_matiere_premiere, id_fournisseur)
+)ENGINE=Innodb;
+
+CREATE TABLE IF NOT EXISTS concevoir(
+	id_matiere_premiere INT NOT NULL,
+	id_produit INT NOT NULL,
+	PRIMARY KEY (id_matiere_premiere , id_produit)
 )ENGINE=Innodb;
 
 CREATE TABLE IF NOT EXISTS promouvoir(
@@ -81,23 +88,17 @@ CREATE TABLE IF NOT EXISTS acheter(
 	PRIMARY KEY (id_produit , id_client)
 )ENGINE=Innodb;
 
-CREATE TABLE IF NOT EXISTS produit(
-	id_produit INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
-	nom_produit VARCHAR(50) NOT NULL,
-	prix_vente DECIMAL(5,2),
-	quantite_produit INT NOT NULL
+CREATE TABLE IF NOT EXISTS fideliser(
+	id_client INT NOT NULL,
+	id_commercial INT NOT NULL,
+	chiffre_affaire DECIMAL(10,2),
+	PRIMARY KEY (id_client , id_commercial)
 )ENGINE=Innodb;
 
-CREATE TABLE IF NOT EXISTS concevoir(
-	id_matiere_premiere INT NOT NULL,
-	id_produit INT NOT NULL,
-	PRIMARY KEY (id_matiere_premiere , id_produit)
-)ENGINE=Innodb;
-
--- Création des contraintes
+-- Ajout des contraintes Foreign Key
 ALTER TABLE utilisateur 
 ADD CONSTRAINT fk_affecter_role
-FOREIGN KEY (id_role) REFERENCES role(id_role)
+FOREIGN KEY (id_role) REFERENCES `role`(id_role)
 ON DELETE CASCADE;
 
 ALTER TABLE fournir 

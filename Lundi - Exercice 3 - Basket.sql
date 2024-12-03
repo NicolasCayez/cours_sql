@@ -1,9 +1,9 @@
 -- Nettoyage si relance du script
-DROP DATABASE IF EXISTS lundi_exercice_3_basket;
+DROP DATABASE IF EXISTS exercice_3_basket;
 -- Création de la base de données
-CREATE DATABASE IF NOT EXISTS lundi_exercice_3_basket CHARSET utf8mb4;
+CREATE DATABASE IF NOT EXISTS exercice_3_basket CHARSET utf8mb4;
 -- Utilisation de la base de donnée pour les scripts suivants
-USE lundi_exercice_3_basket ;
+USE exercice_3_basket ;
 
 -- Création des tables
 CREATE TABLE IF NOT EXISTS poste(
@@ -45,12 +45,6 @@ CREATE TABLE IF NOT EXISTS lieu(
 	id_adresse INT NOT NULL
 )ENGINE=Innodb;
 
-CREATE TABLE IF NOT EXISTS localiser(
-	id_competition INT NOT NULL,
-	id_lieu INT NOT NULL,
-	PRIMARY KEY (id_competition, id_lieu)
-)ENGINE=Innodb;
-
 CREATE TABLE IF NOT EXISTS competition(
 	id_competition INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
 	nom_competition VARCHAR(50) NOT NULL,
@@ -58,7 +52,7 @@ CREATE TABLE IF NOT EXISTS competition(
 	date_fin DATETIME NOT NULL
 )ENGINE=Innodb;
 
-CREATE TABLE IF NOT EXISTS phase(
+CREATE TABLE IF NOT EXISTS `phase`(
 	id_phase INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
 	nom_phase VARCHAR(50) NOT NULL UNIQUE
 )ENGINE=Innodb;
@@ -75,7 +69,15 @@ CREATE TABLE IF NOT EXISTS partie(
 	id_phase INT NOT NULL
 )ENGINE=Innodb;
 
--- Création des contraintes
+-- Création de la table d'association
+-- CREATE TABLE IF NOT EXISTS localiser(
+CREATE TABLE IF NOT EXISTS competition_lieu(
+	id_competition INT NOT NULL,
+	id_lieu INT NOT NULL,
+	PRIMARY KEY (id_competition, id_lieu)
+)ENGINE=Innodb;
+
+-- Ajout des contraintes foreign key
 ALTER TABLE joueur 
 ADD CONSTRAINT fk_jouer_poste
 FOREIGN KEY (id_poste) REFERENCES poste(id_poste)
@@ -99,7 +101,8 @@ ADD CONSTRAINT fk_completer_adresse
 FOREIGN KEY (id_adresse) REFERENCES adresse(id_adresse)
 ON DELETE CASCADE;
 
-ALTER TABLE localiser
+-- ALTER TABLE localiser
+ALTER TABLE competition_lieu
 ADD CONSTRAINT fk_competition
 FOREIGN KEY (id_competition) REFERENCES competition(id_competition)
 ON DELETE CASCADE, 
@@ -118,7 +121,7 @@ ADD CONSTRAINT fk_derouler_competition
 FOREIGN KEY (id_competition) REFERENCES competition(id_competition)
 ON DELETE CASCADE,
 ADD CONSTRAINT fk_detailler_phase
-FOREIGN KEY (id_phase) REFERENCES phase(id_phase)
+FOREIGN KEY (id_phase) REFERENCES `phase`(id_phase)
 ON DELETE CASCADE,
 ADD CONSTRAINT equipes_differente
 CHECK (id_equipe_2 != id_equipe_1);
