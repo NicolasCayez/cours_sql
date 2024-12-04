@@ -139,23 +139,23 @@ WHERE date_creation > '2024-01-01';
 -- ****************************************************** --
 -- Supprimer la categorie 'Électronique', (avec mes exemples : 'fruits')
 -- Supprimer la categorie 'Jouets', (avec mes exemples : 'fromage')
-ALTER TABLE produit_ticket
-DROP CONSTRAINT fk_ajouter_produit;
+-- ALTER TABLE produit_ticket
+-- DROP CONSTRAINT fk_ajouter_produit;
 
-DELETE FROM categorie
-WHERE nom_categorie = 'fruits';
-DELETE FROM categorie
-WHERE nom_categorie = 'fromage';
+-- DELETE FROM categorie
+-- WHERE nom_categorie = 'fruits';
+-- DELETE FROM categorie
+-- WHERE nom_categorie = 'fromage';
 
 -- Supprimer le vendeur 1,
 -- Supprimer tous les tickets qui ont une date inferieure au 1 janvier 2024,
-ALTER TABLE produit_ticket
-DROP CONSTRAINT fk_ajouter_ticket;
+-- ALTER TABLE produit_ticket
+-- DROP CONSTRAINT fk_ajouter_ticket;
 
-DELETE FROM vendeur
-WHERE id_vendeur = 1;
-DELETE FROM ticket
-WHERE date_creation < '2024-01-01';
+-- DELETE FROM vendeur
+-- WHERE id_vendeur = 1;
+-- DELETE FROM ticket
+-- WHERE date_creation < '2024-01-01';
 
 
 -- Supprimer tous les produits de la table produit_ticket qui ont une quantite supérieure à 9
