@@ -11,16 +11,24 @@ USE caisse;
 SELECT DISTINCT p.id_produit AS `Identifiant`, p.nom_produit AS `Produit`
 FROM produit AS p
 LEFT JOIN produit_ticket AS pt ON p.id_produit = pt.id_produit
-WHERE p.id_produit NOT IN (
-	SELECT DISTINCT id_produit FROM produit_ticket 
-);
+-- WHERE p.id_produit NOT IN (
+-- 	SELECT DISTINCT id_produit FROM produit_ticket 
+-- );
+WHERE pt.id_produit IS NULL;
+-- Ou right join avec la recherche sur pt mais avec group by
+
+
 -- Afficher la liste des vendeurs qui n'ont jamais vendu un produit
 SELECT DISTINCT v.id_vendeur AS `Identifiant`, v.nom_vendeur AS `Nom`, v.prenom_vendeur AS `Prénom`
 FROM vendeur AS v
 LEFT JOIN ticket AS t ON v.id_vendeur = t.id_vendeur
-WHERE v.id_vendeur NOT IN (
-	SELECT DISTINCT id_vendeur FROM ticket 
-);
+-- WHERE v.id_vendeur NOT IN (
+-- 	SELECT DISTINCT id_vendeur FROM ticket 
+-- );
+WHERE t.id_vendeur IS NULL;
+-- Ou pt, right join t, right join v , where p.id is null or pt.id is null
+
+
 -- Afficher les 3 produits qui sont le plus vendus.
 SELECT p.id_produit AS `identifiant produit`, p.nom_produit AS `nom du produit`, SUM(pt.quantite) AS `somme`
 FROM produit AS p
@@ -34,6 +42,8 @@ ORDER BY `somme` DESC LIMIT 3;
 -- Réaliser les requêtes suivantes :
 -- Afficher le chiffre d'affaire global (tous les tickets) avec le montant TTC
 SELECT SUM(pt.quantite * p.tarif) AS `CA TTC`
+-- SELECT CONCAT(ROUND(SUM(pt.quantite * p.tarif), 2), ' €') AS `CA TTC
+-- concaténation mais round prend le int et le caste en décimal
 FROM produit_ticket pt
 INNER JOIN produit AS p ON pt.id_produit = p.id_produit;
 
