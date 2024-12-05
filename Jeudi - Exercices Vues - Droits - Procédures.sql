@@ -144,7 +144,7 @@ CREATE PROCEDURE addProduit(
 			VALUES (nom, `desc`, prix, (SELECT c.id_categorie FROM categorie AS c WHERE c.nom_categorie = categorie));
 			COMMIT;
 		END IF;
-	END $$;
+	END $$
 -- TEST
 DELETE FROM produit WHERE nom_produit = 'testNomP';
 CALL addProduit('testNomP', 'testDescP', 20.5, 'test'); -- OK
@@ -173,7 +173,7 @@ CREATE PROCEDURE addTicket(
 			VALUES (`date`, vendeur);
 			COMMIT;
 		END IF;
-	END $$;
+	END $$
 -- TEST
 CALL addTicket(CURDATE(), 2); -- OK
 CALL addTicket('2024-12-22', 2); -- erreur
@@ -200,7 +200,7 @@ CREATE PROCEDURE addVendeur(
 			VALUES (nom, prenom);
 			COMMIT;
 		END IF;
-	END $$;
+	END $$
 -- TEST
 DELETE FROM vendeur WHERE nom_vendeur = 'Toto' AND prenom_vendeur = 'Tata';
 CALL addVendeur('Toto', 'Tata'); -- OK
@@ -229,7 +229,7 @@ CREATE PROCEDURE checkExistingEmail(
 			-- Afficher un message d'erreur
 			SIGNAL SQLSTATE '10000' SET MESSAGE_TEXT = 'Compte déjà existant';
 		END IF;
-	END $$;
+	END $$
 -- TEST
 INSERT INTO utilisateur(email_utilisateur, mot_de_passe) VALUES ('testUser', 'testpasswd');
 CALL checkExistingEmail('testUser'); -- OK
@@ -257,7 +257,7 @@ CREATE PROCEDURE addUser(
 			VALUES (email, HEX(MD5(passwd)));
 			COMMIT;
 		END IF;
-	END $$;
+	END $$
 -- TEST
 DELETE FROM utilisateur WHERE email_utilisateur = 'testUserEmail';
 CALL addUser ('testUserEmail', 'azerty'); -- OK
@@ -282,7 +282,7 @@ CREATE PROCEDURE checkUser(
 			-- Afficher un message d'erreur
 			SIGNAL SQLSTATE '10000' SET MESSAGE_TEXT = 'Mot de passe erroné';
 		END IF;
-	END $$;
+	END $$
 -- TEST
 CALL checkUser ('testUserEmail', 'azerty'); -- OK
 CALL checkUser ('testUserEmail', 'azertaaaa'); -- Erreur MDP
@@ -315,7 +315,7 @@ CREATE PROCEDURE changePasswd(
 			WHERE email_utilisateur = email;
 			COMMIT;
 		END IF;
-	END $$;
+	END $$
 -- TEST
 DELETE FROM utilisateur WHERE email_utilisateur = 'testUserEmail';
 CALL addUser ('testUserEmail', 'azerty'); -- OK
