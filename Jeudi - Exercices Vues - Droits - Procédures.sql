@@ -212,7 +212,7 @@ DROP TABLE IF EXISTS utilisateur;
 CREATE TABLE IF NOT EXISTS utilisateur(
 	id_utilisateur INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
 	email_utilisateur VARCHAR(100) UNIQUE NOT NULL,
-	mot_de_passe BINARY(16) NOT NULL
+	mot_de_passe VARCHAR(255) NOT NULL
 )Engine=InnoDB;
 
 -- Créer une procédure qui va vérifier si le compte n'existe pas déja (email),
@@ -241,7 +241,7 @@ DELETE FROM utilisateur WHERE email_utilisateur = 'testUser';
 DELIMITER $$
 CREATE PROCEDURE addUser(
 		IN email VARCHAR(100),
-		IN passwd VARCHAR(100)
+		IN passwd VARCHAR(255)
 	)
 	BEGIN
 		START TRANSACTION;
@@ -254,19 +254,14 @@ CREATE PROCEDURE addUser(
 		ELSE
 			-- Ajout en BDD
 			INSERT INTO utilisateur (email_utilisateur, mot_de_passe)
-			VALUES (email, UNHEX(MD5(passwd)));
+			VALUES (email, HEX(MD5(passwd)));
 			COMMIT;
 		END IF;
 	END $$;
 -- TEST
+DELETE FROM utilisateur WHERE email_utilisateur = 'testUserEmail';
 CALL addUser ('testUserEmail', 'azerty'); -- OK
 
-
-
-
-
-
--- ****************** NE MARCHENT PAS *************************** --
 
 -- Créer une procédure qui va vérifier si le compte est valide et le mot de passe est correct (vérifier le hash MD5),
 DELIMITER $$
@@ -282,49 +277,48 @@ CREATE PROCEDURE checkUser(
 			-- Afficher un message d'erreur
 			SIGNAL SQLSTATE '10000' SET MESSAGE_TEXT = 'Email erronné';
 		-- test hash MD5
-		ELSEIF (SELECT COUNT(u.id_utilisateur) FROM utilisateur AS u WHERE u.email_utilisateur = email AND HEX(u.mot_de_passe) = UNHEX(MD5(passwd))) = 0 THEN
+		ELSEIF (SELECT COUNT(u.id_utilisateur) FROM utilisateur AS u WHERE u.email_utilisateur = email AND u.mot_de_passe = HEX(MD5(passwd))) <= 0 THEN
 			ROLLBACK;
 			-- Afficher un message d'erreur
 			SIGNAL SQLSTATE '10000' SET MESSAGE_TEXT = 'Mot de passe erroné';
 		END IF;
 	END $$;
 -- TEST
-CALL checkUser ('testUserEmail', 'azerty');
-CALL checkUser ('testUserEmail', 'azertaaaa');
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+CALL checkUser ('testUserEmail', 'azerty'); -- OK
+CALL checkUser ('testUserEmail', 'azertaaaa'); -- Erreur MDP
+CALL checkUser ('testUserEmail1', 'azerty'); -- Erreur email
 
 
 -- Créer une procédure qui va permettre de mettre à jour le mot de passe en vérifiant l'ancien mot de passe (Hash md5) et le remplacer par le nouveau (hasher également en MD5).
 DELIMITER $$
 CREATE PROCEDURE changePasswd(
 		IN email VARCHAR(100),
-		IN passwd VARCHAR(100)
+		IN oldPasswd VARCHAR(255),
+		IN newPasswd VARCHAR(255)
 	)
 	BEGIN
 		START TRANSACTION;
-		-- test si le compte et le mot de passe sont ok
-		IF checkUser(email, passwd) = '10000' THEN
+		-- test si le compte est non valide
+		IF (SELECT COUNT(u.email_utilisateur) FROM utilisateur AS u WHERE u.email_utilisateur = email) = 0 THEN
 			ROLLBACK;
 			-- Afficher un message d'erreur
-			SIGNAL SQLSTATE '10000' SET MESSAGE_TEXT = 'Compte inexistant ou mot de passe erroné';
+			SIGNAL SQLSTATE '10000' SET MESSAGE_TEXT = 'Email erronné';
 		-- test hash MD5
+		ELSEIF (SELECT COUNT(u.id_utilisateur) FROM utilisateur AS u WHERE u.email_utilisateur = email AND u.mot_de_passe = HEX(MD5(oldPasswd))) <= 0 THEN
+			ROLLBACK;
+			-- Afficher un message d'erreur
+			SIGNAL SQLSTATE '10000' SET MESSAGE_TEXT = 'Ancien mot de passe erroné';
 		ELSE
+			-- Mise a jour
 			UPDATE utilisateur
-			SET mot_de_passe = UNHEX(MD5(passwd))
+			SET mot_de_passe = HEX(MD5(newPasswd))
 			WHERE email_utilisateur = email;
 			COMMIT;
 		END IF;
-	END $$
+	END $$;
+-- TEST
+DELETE FROM utilisateur WHERE email_utilisateur = 'testUserEmail';
+CALL addUser ('testUserEmail', 'azerty'); -- OK
+CALL changePasswd ('testUserEmail', 'azerty', 'qsdfgh');
+CALL checkUser ('testUserEmail', 'azerty'); -- Erreur MDP
+CALL checkUser ('testUserEmail', 'qsdfgh'); -- OK
